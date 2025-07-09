@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/supportdb
-    username: postgres
-    password: 58Ss_NaBo
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/employees_management}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:root}
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
 
 app:
-  jwt-secret: 5e6e0cf10a57c6b4e5b5a0e5ecb415bca702d9173e0fe90f2d9d6096b813d054
-  jwt-expiration-time: 3600000
+  jwt-secret: ${JWT_SECRET:5e6e0cf10a57c6b4e5b5a0e5ecb415bca702d9173e0fe90f2d9d6096b813d054}
+  jwt-expiration-time: ${JWT_EXPIRATION_TIME:3600000}
