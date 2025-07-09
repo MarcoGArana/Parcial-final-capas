@@ -4,7 +4,9 @@ import com.uca.parcialfinalncapas.dto.request.UserCreateRequest;
 import com.uca.parcialfinalncapas.dto.request.UserUpdateRequest;
 import com.uca.parcialfinalncapas.dto.response.GeneralResponse;
 import com.uca.parcialfinalncapas.dto.response.UserResponse;
+import com.uca.parcialfinalncapas.entities.Ticket;
 import com.uca.parcialfinalncapas.entities.User;
+import com.uca.parcialfinalncapas.security.JwtTokenProvider;
 import com.uca.parcialfinalncapas.service.UserService;
 import com.uca.parcialfinalncapas.utils.ResponseBuilderUtil;
 import jakarta.validation.Valid;
@@ -22,6 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserController {
     private UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('TECH')")
@@ -38,8 +41,10 @@ public class UserController {
     @GetMapping("/tickets")
     @PreAuthorize("hasRole('TECH')")
     public ResponseEntity<GeneralResponse> getUserTickets(@RequestHeader("Authorization") String authHeader) {
-        UserResponse user = UserResponse.builder().build();
-        return ResponseBuilderUtil.buildResponse("Usuario encontrado", HttpStatus.OK, user);
+        String token = authHeader.replace("Bearer ", "");
+        String usernameOrEmail = jwtTokenProvider.getUsernameFromToken(token);
+        List<Ticket> tickets = userService.findByUsernameOrEmail(usernameOrEmail);
+        return ResponseBuilderUtil.buildResponse("Tickets encontrados", HttpStatus.OK, tickets);
     }
 
     @GetMapping("/{correo}")
