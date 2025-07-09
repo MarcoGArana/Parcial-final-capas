@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,6 +22,9 @@ public class User {
     private String correo;
     private String password;
     private String nombreRol; // USER o TECH
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Ticket> tickets;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {
             CascadeType.PERSIST,

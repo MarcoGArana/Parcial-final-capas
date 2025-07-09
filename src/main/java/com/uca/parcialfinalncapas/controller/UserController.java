@@ -33,6 +33,12 @@ public class UserController {
         );
     }
 
+    @GetMapping("/tickets")
+    public ResponseEntity<GeneralResponse> getUserTickets() {
+        UserResponse user = UserResponse.builder().build();
+        return ResponseBuilderUtil.buildResponse("Usuario encontrado", HttpStatus.OK, user);
+    }
+
     @GetMapping("/{correo}")
     public ResponseEntity<GeneralResponse> getUserByCorreo(@PathVariable String correo) {
         UserResponse user = userService.findByCorreo(correo);

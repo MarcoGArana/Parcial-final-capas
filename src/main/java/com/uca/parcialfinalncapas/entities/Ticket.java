@@ -21,7 +21,11 @@ public class Ticket {
     private String titulo;
     private String descripcion;
     private String estado;
-    private Long usuarioId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    private User usuario;
+
     private Long tecnicoAsignadoId;
     private LocalDateTime fecha;
 }
