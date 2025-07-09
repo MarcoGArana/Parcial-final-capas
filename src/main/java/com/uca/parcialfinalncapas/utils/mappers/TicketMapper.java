@@ -5,6 +5,7 @@ import com.uca.parcialfinalncapas.dto.request.TicketUpdateRequest;
 import com.uca.parcialfinalncapas.dto.response.TicketResponse;
 import com.uca.parcialfinalncapas.dto.response.TicketResponseList;
 import com.uca.parcialfinalncapas.entities.Ticket;
+import com.uca.parcialfinalncapas.entities.User;
 import com.uca.parcialfinalncapas.utils.enums.State;
 
 import java.time.LocalDateTime;
@@ -13,12 +14,12 @@ import java.util.List;
 
 public class TicketMapper {
 
-    public static Ticket toEntityCreate(TicketCreateRequest ticketRequest, Long usuarioId, Long tecnicoAsignadoId) {
+    public static Ticket toEntityCreate(TicketCreateRequest ticketRequest, User usuario, Long tecnicoAsignadoId) {
         return Ticket.builder()
                 .titulo(ticketRequest.getTitulo())
                 .descripcion(ticketRequest.getDescripcion())
                 .estado(State.OPEN.getDescription())
-                .usuarioId(usuarioId)
+                .usuario(usuario)
                 .tecnicoAsignadoId(tecnicoAsignadoId)
                 .fecha(LocalDateTime.now())
                 .build();
@@ -37,7 +38,7 @@ public class TicketMapper {
                         : State.OPEN.getDescription())
                         : ticketOriginal.getEstado())
                 .tecnicoAsignadoId(tecnicoAsignadoId != null ? tecnicoAsignadoId : ticketOriginal.getTecnicoAsignadoId())
-                .usuarioId(ticketOriginal.getUsuarioId())
+                .usuario(ticketOriginal.getUsuario())
                 .fecha(LocalDateTime.now())
                 .build();
     }
@@ -60,7 +61,7 @@ public class TicketMapper {
                         .titulo(ticket.getTitulo())
                         .descripcion(ticket.getDescripcion())
                         .estado(ticket.getEstado())
-                        .solicitanteId(ticket.getUsuarioId())
+                        .solicitanteId(ticket.getUsuario().getId())
                         .soporteId(ticket.getTecnicoAsignadoId())
                         .build())
                 .toList();

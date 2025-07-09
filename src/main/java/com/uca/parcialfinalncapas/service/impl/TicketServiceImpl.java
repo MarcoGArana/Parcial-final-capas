@@ -44,7 +44,7 @@ public class TicketServiceImpl implements TicketService {
             throw new BadTicketRequestException("El usuario asignado no es un técnico de soporte");
         }
 
-        var ticketGuardado = ticketRepository.save(TicketMapper.toEntityCreate(ticket, usuarioSolicitante.getId(), usuarioSoporte.getId()));
+        var ticketGuardado = ticketRepository.save(TicketMapper.toEntityCreate(ticket, usuarioSolicitante, usuarioSoporte.getId()));
 
         return TicketMapper.toDTO(ticketGuardado, usuarioSolicitante.getCorreo(), usuarioSoporte.getCorreo());
     }
@@ -55,7 +55,7 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticketExistente = ticketRepository.findById(ticket.getId())
                 .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado con ID: " + ticket.getId()));
 
-        var usuarioSolicitante = userRepository.findById(ticketExistente.getUsuarioId())
+        var usuarioSolicitante = userRepository.findById(ticketExistente.getUsuario().getId())
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
         var usuarioSoporte = userRepository.findByCorreo(ticket.getCorreoSoporte())
@@ -83,7 +83,7 @@ public class TicketServiceImpl implements TicketService {
     var ticketExistente = ticketRepository.findById(id)
             .orElseThrow(() -> new TicketNotFoundException("Ticket no encontrado con ID: " + id));
 
-    var usuarioSolicitante = userRepository.findById(ticketExistente.getUsuarioId())
+    var usuarioSolicitante = userRepository.findById(ticketExistente.getUsuario().getId())
             .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
     var usuarioSoporte = userRepository.findById(ticketExistente.getTecnicoAsignadoId())
