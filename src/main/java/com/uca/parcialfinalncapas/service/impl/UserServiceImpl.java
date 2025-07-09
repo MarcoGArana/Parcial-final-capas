@@ -3,11 +3,13 @@ package com.uca.parcialfinalncapas.service.impl;
 import com.uca.parcialfinalncapas.dto.request.UserCreateRequest;
 import com.uca.parcialfinalncapas.dto.request.UserUpdateRequest;
 import com.uca.parcialfinalncapas.dto.response.UserResponse;
+import com.uca.parcialfinalncapas.entities.Role;
 import com.uca.parcialfinalncapas.entities.Ticket;
 import com.uca.parcialfinalncapas.entities.User;
 import com.uca.parcialfinalncapas.exceptions.UserNotFoundException;
 import com.uca.parcialfinalncapas.repository.UserRepository;
 import com.uca.parcialfinalncapas.service.UserService;
+import com.uca.parcialfinalncapas.utils.enums.Rol;
 import com.uca.parcialfinalncapas.utils.mappers.UserMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,12 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("Ya existe un usuario con el correo: " + user.getCorreo());
         }
 
-        return UserMapper.toDTO(userRepository.save(UserMapper.toEntityCreate(user)));
+        List<Role> roles = List.of(Role.builder()
+                .id(Rol.valueOf(user.getNombreRol()).ordinal())
+                .name(user.getNombreRol())
+                .build());
+
+        return UserMapper.toDTO(userRepository.save(UserMapper.toEntityCreate(user, roles)));
     }
 
     @Override

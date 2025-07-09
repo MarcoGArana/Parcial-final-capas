@@ -3,7 +3,9 @@ package com.uca.parcialfinalncapas.utils.mappers;
 import com.uca.parcialfinalncapas.dto.request.UserCreateRequest;
 import com.uca.parcialfinalncapas.dto.request.UserUpdateRequest;
 import com.uca.parcialfinalncapas.dto.response.UserResponse;
+import com.uca.parcialfinalncapas.entities.Role;
 import com.uca.parcialfinalncapas.entities.User;
+import com.uca.parcialfinalncapas.utils.enums.Rol;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class UserMapper {
 
-    public static User toEntityCreate(UserCreateRequest userRequest) {
+    public static User toEntityCreate(UserCreateRequest userRequest, List<Role> rol) {
         return User.builder()
                 .nombre(userRequest.getNombre())
                 .correo(userRequest.getCorreo())

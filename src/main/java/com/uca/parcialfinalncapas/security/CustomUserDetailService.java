@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -25,13 +26,9 @@ public class CustomUserDetailService implements UserDetailsService {
         com.uca.parcialfinalncapas.entities.User user = userRepository.findByCorreo(usernameOrEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(usernameOrEmail));
 
-        // Maps the employee's roles to granted authorities
-        Set<GrantedAuthority> grantedAuthorities = user.getRoles()
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName())) // Converts each role to a granted authority
-                .collect(Collectors.toSet());
+        GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRoles());
 
         // Returns a Spring Security User object with the employee's username, password, and authorities
-        return new User(user.getNombre(), user.getPassword(), grantedAuthorities);
+        return new User(user.getNombre(), user.getPassword(), List.of(authority));
     }
 }
