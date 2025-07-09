@@ -21,6 +21,7 @@ public class TicketController {
     private TicketService ticketService;
 
     @GetMapping
+    @PreAuthorize("hasRole('TECH')")
     public ResponseEntity<GeneralResponse> getAllTickets() {
         return ResponseBuilderUtil.buildResponse("Tickets obtenidos correctamente",
                 ticketService.getAllTickets().isEmpty() ? HttpStatus.BAD_REQUEST : HttpStatus.OK,
@@ -28,6 +29,7 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('TECH')")
     public ResponseEntity<GeneralResponse> getTicketById(@PathVariable Long id) {
         TicketResponse ticket = ticketService.getTicketById(id);
         if (ticket == null) {
@@ -37,18 +39,21 @@ public class TicketController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('TECH','USER')")
     public ResponseEntity<GeneralResponse> createTicket(@Valid @RequestBody TicketCreateRequest ticket) {
         TicketResponse createdTicket = ticketService.createTicket(ticket);
         return ResponseBuilderUtil.buildResponse("Ticket creado correctamente", HttpStatus.CREATED, createdTicket);
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('TECH')")
     public ResponseEntity<GeneralResponse> updateTicket(@Valid @RequestBody TicketUpdateRequest ticket) {
         TicketResponse updatedTicket = ticketService.updateTicket(ticket);
         return ResponseBuilderUtil.buildResponse("Ticket actualizado correctamente", HttpStatus.OK, updatedTicket);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('TECH')")
     public ResponseEntity<GeneralResponse> deleteTicket(@PathVariable Long id) {
         ticketService.deleteTicket(id);
         return ResponseBuilderUtil.buildResponse("Ticket eliminado correctamente", HttpStatus.OK, null);
