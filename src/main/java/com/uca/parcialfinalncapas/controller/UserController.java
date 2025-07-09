@@ -51,7 +51,7 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasRole('TECH')")
-    public ResponseEntity<GeneralResponse> createUser(@Valid @RequestBody UserCreateRequest user, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<GeneralResponse> createUser(@Valid @RequestBody UserCreateRequest user) {
         UserResponse createdUser = userService.save(user);
         return ResponseBuilderUtil.buildResponse("Usuario creado correctamente", HttpStatus.CREATED, createdUser);
     }
