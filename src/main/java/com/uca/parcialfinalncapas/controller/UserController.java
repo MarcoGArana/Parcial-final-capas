@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,8 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/all")
-    public ResponseEntity<GeneralResponse> getAllUsers() {
+    @PreAuthorize("hasRole('TECH')")
+    public ResponseEntity<GeneralResponse> getAllUsers(@RequestHeader("Authorization") String authHeader) {
         List<UserResponse> users = userService.findAll();
 
         return ResponseBuilderUtil.buildResponse(
@@ -37,6 +39,7 @@ public class UserController {
     }
 
     @GetMapping("/tickets")
+    @PreAuthorize("hasRole('TECH')")
     public ResponseEntity<GeneralResponse> getUserTickets(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.replace("Bearer ", "");
         String usernameOrEmail = jwtTokenProvider.getUsernameFromToken(token);
@@ -45,25 +48,29 @@ public class UserController {
     }
 
     @GetMapping("/{correo}")
-    public ResponseEntity<GeneralResponse> getUserByCorreo(@PathVariable String correo) {
+    @PreAuthorize("hasRole('TECH')")
+    public ResponseEntity<GeneralResponse> getUserByCorreo(@PathVariable String correo, @RequestHeader("Authorization") String authHeader) {
         UserResponse user = userService.findByCorreo(correo);
         return ResponseBuilderUtil.buildResponse("Usuario encontrado", HttpStatus.OK, user);
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('TECH')")
     public ResponseEntity<GeneralResponse> createUser(@Valid @RequestBody UserCreateRequest user) {
         UserResponse createdUser = userService.save(user);
         return ResponseBuilderUtil.buildResponse("Usuario creado correctamente", HttpStatus.CREATED, createdUser);
     }
 
     @PutMapping
-    public ResponseEntity<GeneralResponse> updateUser(@Valid @RequestBody UserUpdateRequest user) {
+    @PreAuthorize("hasRole('TECH')")
+    public ResponseEntity<GeneralResponse> updateUser(@Valid @RequestBody UserUpdateRequest user, @RequestHeader("Authorization") String authHeader) {
         UserResponse updatedUser = userService.update(user);
         return ResponseBuilderUtil.buildResponse("Usuario actualizado correctamente", HttpStatus.OK, updatedUser);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<GeneralResponse> deleteUser(@PathVariable Long id) {
+    @PreAuthorize("hasRole('TECH')")
+    public ResponseEntity<GeneralResponse> deleteUser(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
         userService.delete(id);
         return ResponseBuilderUtil.buildResponse("Usuario eliminado correctamente", HttpStatus.OK, null);
     }

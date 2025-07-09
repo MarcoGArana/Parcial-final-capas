@@ -23,7 +23,7 @@ public class TicketController {
 
     @GetMapping
     @PreAuthorize("hasRole('TECH')")
-    public ResponseEntity<GeneralResponse> getAllTickets() {
+    public ResponseEntity<GeneralResponse> getAllTickets(@RequestHeader("Authorization") String authHeader) {
         return ResponseBuilderUtil.buildResponse("Tickets obtenidos correctamente",
                 ticketService.getAllTickets().isEmpty() ? HttpStatus.BAD_REQUEST : HttpStatus.OK,
                 ticketService.getAllTickets());
@@ -31,7 +31,7 @@ public class TicketController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('TECH')")
-    public ResponseEntity<GeneralResponse> getTicketById(@PathVariable Long id) {
+    public ResponseEntity<GeneralResponse> getTicketById(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
         TicketResponse ticket = ticketService.getTicketById(id);
         if (ticket == null) {
             throw new BadTicketRequestException("Ticket no encontrado");
@@ -41,21 +41,21 @@ public class TicketController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('TECH','USER')")
-    public ResponseEntity<GeneralResponse> createTicket(@Valid @RequestBody TicketCreateRequest ticket) {
+    public ResponseEntity<GeneralResponse> createTicket(@Valid @RequestBody TicketCreateRequest ticket,  @RequestHeader("Authorization") String authHeader) {
         TicketResponse createdTicket = ticketService.createTicket(ticket);
         return ResponseBuilderUtil.buildResponse("Ticket creado correctamente", HttpStatus.CREATED, createdTicket);
     }
 
     @PutMapping
     @PreAuthorize("hasRole('TECH')")
-    public ResponseEntity<GeneralResponse> updateTicket(@Valid @RequestBody TicketUpdateRequest ticket) {
+    public ResponseEntity<GeneralResponse> updateTicket(@Valid @RequestBody TicketUpdateRequest ticket, @RequestHeader("Authorization") String authHeader) {
         TicketResponse updatedTicket = ticketService.updateTicket(ticket);
         return ResponseBuilderUtil.buildResponse("Ticket actualizado correctamente", HttpStatus.OK, updatedTicket);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('TECH')")
-    public ResponseEntity<GeneralResponse> deleteTicket(@PathVariable Long id) {
+    public ResponseEntity<GeneralResponse> deleteTicket(@PathVariable Long id, @RequestHeader("Authorization") String authHeader) {
         ticketService.deleteTicket(id);
         return ResponseBuilderUtil.buildResponse("Ticket eliminado correctamente", HttpStatus.OK, null);
     }
