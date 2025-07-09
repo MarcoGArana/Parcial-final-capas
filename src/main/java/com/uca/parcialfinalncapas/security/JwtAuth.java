@@ -19,5 +19,6 @@ public class JwtAuth implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+        response.getWriter().write("{\"error\": \"Token no proveido o token invalido\"}");
     }
 }
