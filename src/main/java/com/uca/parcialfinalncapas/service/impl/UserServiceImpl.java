@@ -3,6 +3,7 @@ package com.uca.parcialfinalncapas.service.impl;
 import com.uca.parcialfinalncapas.dto.request.UserCreateRequest;
 import com.uca.parcialfinalncapas.dto.request.UserUpdateRequest;
 import com.uca.parcialfinalncapas.dto.response.UserResponse;
+import com.uca.parcialfinalncapas.entities.Ticket;
 import com.uca.parcialfinalncapas.entities.User;
 import com.uca.parcialfinalncapas.exceptions.UserNotFoundException;
 import com.uca.parcialfinalncapas.repository.UserRepository;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -36,9 +38,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse update(UserUpdateRequest user) {
-        if (userRepository.findById(user.getId()).isEmpty()) {
+        Optional<User> usuario = userRepository.findById(user.getId());
+        if (usuario.isEmpty()) {
             throw new UserNotFoundException("No se encontró un usuario con el ID: " + user.getId());
         }
+
+        user.setTickets(usuario.get().getTickets());
 
         return UserMapper.toDTO(userRepository.save(UserMapper.toEntityUpdate(user)));
     }
@@ -54,5 +59,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponse> findAll() {
         return UserMapper.toDTOList(userRepository.findAll());
+    }
+
+    @Override
+    public List<Ticket> findByUsernameOrEmail(String usernameOrEmail) {
+        User usuario = userRepository.findByNombreOrCorreo(usernameOrEmail, usernameOrEmail)
+                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con username o email: " + usernameOrEmail));
+        return usuario.getTickets();
     }
 }
